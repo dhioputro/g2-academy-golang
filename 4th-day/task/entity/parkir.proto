@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+option go_package = "/entity";
+
+package task;
+import "google/protobuf/Empty.proto";
+
+service Connect {
+  rpc ConnectToServer (google.protobuf.Empty) returns (ServerReply) {}
+  rpc GetParkID (google.protobuf.Empty) returns (ParkID) {}
+  rpc GetParkBill (Parked) returns (ParkBill) {}
+}
+
+message ServerReply {
+  string message = 1;
+}
+
+message ParkID {
+  string id = 1;
+}
+
+message Parked {
+  string id = 1;
+  string vehicle = 2;
+  string plate = 3;
+}
+
+message ParkBill {
+  string vehicle = 1;
+	string plate = 2;     
+	string entry = 3;
+	string exit = 4;
+	int32 Bill = 5;         
+}
+
