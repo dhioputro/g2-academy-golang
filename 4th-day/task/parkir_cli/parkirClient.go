@@ -26,7 +26,6 @@ func main() {
 	for input != "99" {
 		fmt.Println("1. Parking Entry")
 		fmt.Println("2. Parking Out")
-		fmt.Println("3. Parking ID List")
 		fmt.Println("99. Done")
 		fmt.Println("What to choose?")
 		fmt.Scanln(&input)
@@ -45,14 +44,7 @@ func main() {
 			fmt.Scanln(&vPlate)
 			fmt.Println("Parking ID : ")
 			fmt.Scanln(&parkID)
-			fmt.Println(parkOut(vType, vPlate, parkID))
-
-		case "3":
-			if len(parkList) > 0 {
-				fmt.Println(parkList)
-			} else {
-				fmt.Println("No parking vehicle right now \n")
-			}
+			parkOut(vType, vPlate, parkID)
 
 		case "99":
 			fmt.Println("Thank You")
@@ -65,27 +57,27 @@ func main() {
 }
 
 func parkIn() {
-	user := ConnectServer()
+	conn := ConnectServer()
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
-	getPark, err := user.GetParkID(ctx, new(empty.Empty))
+	getPark, err := conn.GetParkID(ctx, new(empty.Empty))
 	if err != nil {
 		log.Fatalf("could not greet: %v", err)
 	}
-	log.Printf("Your Park Id: %s", getPark.GetParkid())
+	log.Printf("Your Park Id: %s", getPark.GetId())
 }
 
 func parkOut(vType, vPlate, parkID string) {
-	user := ConnectServer()
+	conn := ConnectServer()
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Hour)
 	defer cancel()
 
-	parked := en.Parked{ParkID: id, Vehicle: vehicle, Plate: plate}
+	parked := en.Parked{Id: parkID, Vehicle: vType, Plate: vPlate}
 
-	getBill, err := user.GetParkBill(ctx, &parked)
+	getBill, err := conn.GetParkBill(ctx, &parked)
 	if err != nil {
 		log.Fatalf("could not greet: %v", err)
 	}

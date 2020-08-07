@@ -2,12 +2,9 @@ package main
 
 import (
 	"context"
-	"encoding/json"
-	"fmt"
-	"io/ioutil"
 	"log"
 	"math/rand"
-	"net/http"
+	"net"
 	"strconv"
 	"time"
 
@@ -32,7 +29,7 @@ type ParkBill struct {
 	Plate    string `json:"plate"`
 	ParkTime string `json:"entry"`
 	ExitTime string `json:"exit"`
-	Bill     int32    `json:"bill"`
+	Bill     int32  `json:"bill"`
 }
 
 type server struct {
@@ -45,11 +42,11 @@ func (s *server) ConnectToServer(ctx context.Context, void *empty.Empty) (*en.Se
 
 func (s *server) GetParkID(ctx context.Context, void *empty.Empty) (*en.ParkID, error) {
 	generateID := parkIn()
-	return &en.ParkID{ParkID: generatedID}, nil
+	return &en.ParkID{Id: generateID}, nil
 }
-func (s *server) GetParkFee(ctx context.Context, parkExit *en.Parked) (*en.Nota, error) {
+func (s *server) GetParkFee(ctx context.Context, parkExit *en.Parked) (*en.ParkBill, error) {
 	entryTime, exitTime, parkingFee := parkOut(parkExit.GetId(), parkExit.GetVehicle(), parkExit.GetPlate())
-	result := en.ParkBill{Type: parkExit.GetVehicle(), Plate: parkExit.GetPlate(), Entry: entryTime, Exit: exitTime, Parking Fee: parkingFee}
+	result := en.ParkBill{Vehicle: parkExit.GetVehicle(), Plate: parkExit.GetPlate(), Entry: entryTime, Exit: exitTime, Bill: parkingFee}
 
 	return &result, nil
 }
